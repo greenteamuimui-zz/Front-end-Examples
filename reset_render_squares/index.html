@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Render And Reset Boxes</title>
+    <link rel="stylesheet" href="squares.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>   
+  </head>
+  <body>
+    <div id="container">
+      <!-- This element's contents will be replaced with your component. -->
+    </div>
+  </body>
+  <script type="text/babel">
+  class Hello extends React.Component {
+    constructor(){
+      super();
+      this.state = {
+        value: 0,
+        boxState: [],
+        order: [],
+      }
+      this.updateInput = this.updateInput.bind(this);
+      this.renderBoxes = this.renderBoxes.bind(this);
+      this.setBoxState = this.setBoxState.bind(this);
+      this.boxClick = this.boxClick.bind(this);
+      this.reset = this.reset.bind(this);
+    }
+    
+    updateInput(e){
+      this.setState({value: e.target.value})
+    }
+    
+    setBoxState(){
+      let arr = new Array(parseInt(this.state.value));
+      arr.fill("box");
+      this.setState({boxState: arr});
+      this.setState({order: []});
+    }
+    
+    boxClick(e){
+      let updatedState = this.state.boxState.slice(0);
+      updatedState[e.currentTarget.id] = "clicked";
+      this.setState({boxState: updatedState});
+      let updatedOrder = this.state.order.slice(0);
+      if (!(updatedOrder.includes(e.currentTarget.id))) {
+        updatedOrder.push(e.currentTarget.id);
+      }
+      this.setState({order: updatedOrder});
+    }
+    
+    reset(){
+    let that = this;
+    for(let i = 0; i < this.state.order.length; i++) {
+        setTimeout(function(){
+          let idx = that.state.order[i];
+          let changedState = that.state.boxState.slice();
+          changedState[idx] = "box";
+          that.setState({boxState: changedState})
+        }, 1000*i)
+       }
+    }
+    
+    
+    renderBoxes(){
+      return(
+      this.state.boxState.map((box, idx) => 
+      <div className={this.state.boxState[idx]} key={idx} id={idx} onClick={this.boxClick}>
+      </div>)
+      )
+    }
+
+
+    render() {
+      return (
+      <div>Hello {this.props.name}
+      <input onChange={this.updateInput}></input>
+      <input type="submit" onClick={this.setBoxState}></input>
+      <button onClick={this.reset}>Reset</button>
+      <div>{this.renderBoxes()}</div>
+      </div>
+      );
+    }
+  }
+
+  ReactDOM.render(
+    <Hello name="World" />,
+    document.getElementById('container')
+  );
+  </script>
+</html>

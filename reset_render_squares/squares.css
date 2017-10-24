@@ -1,0 +1,13 @@
+.box{
+  border:1px solid white;
+  background-color: grey;
+  width:100px;
+  height:100px;
+}
+
+.clicked{
+  border:1px solid white;
+  background-color: black;
+  width:100px;
+  height:100px;
+}
